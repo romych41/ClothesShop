@@ -22,7 +22,7 @@ public class JwtTokenProvider {
     private Long expiration;
 
     public String createToken(Authentication authentication) {
-        User userPrincipal = userRepository.findByUsername(((User) authentication.getPrincipal()).getUsername());
+        User userPrincipal = userRepository.findByEmail(((User) authentication.getPrincipal()).getUsername());
 
         return Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
