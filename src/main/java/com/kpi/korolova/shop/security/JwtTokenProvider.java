@@ -1,6 +1,6 @@
 package com.kpi.korolova.shop.security;
 
-import com.kpi.korolova.shop.model.User;
+import com.kpi.korolova.shop.entities.User;
 import com.kpi.korolova.shop.repository.UserRepository;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.kpi.korolova.shop.model;
+package com.kpi.korolova.shop.entities;
 
 import org.hibernate.annotations.Cascade;
 

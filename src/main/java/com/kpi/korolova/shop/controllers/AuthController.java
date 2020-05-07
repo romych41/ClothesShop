@@ -1,8 +1,7 @@
 package com.kpi.korolova.shop.controllers;
 
-import com.kpi.korolova.shop.model.Customer;
-import com.kpi.korolova.shop.model.User;
-import com.kpi.korolova.shop.repository.CustomerRepository;
+import com.kpi.korolova.shop.entities.Customer;
+import com.kpi.korolova.shop.entities.User;
 import com.kpi.korolova.shop.repository.UserRepository;
 import com.kpi.korolova.shop.security.JwtTokenProvider;
 import com.kpi.korolova.shop.service.CustomerService;

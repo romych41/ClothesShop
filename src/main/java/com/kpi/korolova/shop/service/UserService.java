@@ -1,6 +1,6 @@
 package com.kpi.korolova.shop.service;
 
-import com.kpi.korolova.shop.model.User;
+import com.kpi.korolova.shop.entities.User;
 import com.kpi.korolova.shop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

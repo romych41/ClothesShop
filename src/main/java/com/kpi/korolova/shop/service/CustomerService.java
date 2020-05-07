@@ -2,7 +2,7 @@ package com.kpi.korolova.shop.service;
 
 import com.kpi.korolova.shop.exceptions.InvalidParamsException;
 import com.kpi.korolova.shop.exceptions.UserExistsException;
-import com.kpi.korolova.shop.model.Customer;
+import com.kpi.korolova.shop.entities.Customer;
 import com.kpi.korolova.shop.repository.CustomerRepository;
 import com.kpi.korolova.shop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

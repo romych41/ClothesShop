@@ -1,6 +1,6 @@
 package com.kpi.korolova.shop.repository;
 
-import com.kpi.korolova.shop.model.User;
+import com.kpi.korolova.shop.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
