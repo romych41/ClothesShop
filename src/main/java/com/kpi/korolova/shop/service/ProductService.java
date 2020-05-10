@@ -6,6 +6,7 @@ import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.model.CsvProduct;
 import com.kpi.korolova.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,11 +27,15 @@ public class ProductService {
         productDao.upsertProducts(productList);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).getContent();
     }
 
     public long getAllProductsCount() {
         return productRepository.count();
+    }
+
+    public void editProduct(Product product) {
+        productRepository.save(product);
     }
 }
