@@ -1,6 +1,6 @@
 package com.kpi.korolova.shop.model;
 
-import com.kpi.korolova.shop.entities.Product;
+import com.kpi.korolova.shop.entities.ProductName;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -175,23 +175,24 @@ public class CsvProduct {
                 '}';
     }
 
-    public Product toProduct() {
-        Product product = new Product();
-        product.setCode(this.code);
-        product.setName(this.name);
-        product.setCost(this.cost);
-        product.setMarkup(this.markup);
-        product.setPrice(this.price);
-        product.setAmount(this.amount.intValue());
-        product.setAddDate(this.addDate);
-        product.setStorage(this.storage);
-        product.setLeft(this.left.intValue());
-        product.setsCost(this.sCost);
-        product.setsPrice(this.sPrice);
-        product.setColor(this.color);
-        product.setSize(Product.Size.valueOf(this.size));
-        Product.Category category = Product.Category.fromProductName(this.name);
-        product.setCategory(category);
-        return product;
+    public ProductName toProduct() {
+//        Product product = new Product();
+//        product.setCode(this.code);
+//        product.setName(this.name);
+//        product.setCost(this.cost);
+//        product.setMarkup(this.markup);
+//        product.setPrice(this.price);
+//        product.setAmount(this.amount.intValue());
+//        product.setAddDate(this.addDate);
+//        product.setStorage(this.storage);
+//        product.setLeft(this.left.intValue());
+//        product.setsCost(this.sCost);
+//        product.setsPrice(this.sPrice);
+//        product.setColor(this.color);
+//        product.setSize(Product.Size.valueOf(this.size));
+//        Product.Category category = Product.Category.fromProductName(this.name);
+//        product.setCategory(category);
+//        return product;
+        return null;
     }
 }

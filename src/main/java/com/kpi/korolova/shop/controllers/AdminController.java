@@ -1,7 +1,8 @@
 package com.kpi.korolova.shop.controllers;
 
-import com.kpi.korolova.shop.entities.Product;
 import com.kpi.korolova.shop.model.CsvData;
+import com.kpi.korolova.shop.entities.ProductModel;
+import com.kpi.korolova.shop.entities.ProductName;
 import com.kpi.korolova.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,7 @@ public class AdminController {
                                    @RequestParam String sort) {
         ModelMap modelMap = new ModelMap();
         try {
-            Pageable pageable = PageRequest.of(page-1, size, Sort.by(sort));
+            Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort));
             modelMap.addAttribute("data", productService.getAllProducts(pageable));
             modelMap.addAttribute("count", productService.getAllProductsCount());
             modelMap.addAttribute("success", true);
@@ -46,11 +47,24 @@ public class AdminController {
         return modelMap;
     }
 
-    @PutMapping("/product")
-    public ModelMap editProduct(@RequestBody Product product) {
+    @PutMapping("/productName")
+    public ModelMap editProduct(@RequestBody ProductName product) {
         ModelMap modelMap = new ModelMap();
         try {
-            productService.editProduct(product);
+            productService.editProductName(product);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @PutMapping("/productModel")
+    public ModelMap editProduct(@RequestBody ProductModel product) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            productService.editProductModel(product);
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             modelMap.addAttribute("success", false);
