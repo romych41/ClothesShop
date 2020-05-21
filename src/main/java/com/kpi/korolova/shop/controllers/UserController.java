@@ -1,6 +1,7 @@
 package com.kpi.korolova.shop.controllers;
 
 import com.kpi.korolova.shop.entities.Customer;
+import com.kpi.korolova.shop.entities.User;
 import com.kpi.korolova.shop.service.CustomerService;
 import com.kpi.korolova.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ public class UserController {
     public ModelMap getCurrentUser() {
         ModelMap modelMap = new ModelMap();
         try {
-            modelMap.addAttribute("data", userService.getCurrentUser());
+            User user = userService.getCurrentUser();
+            user.setPassword("");
+            modelMap.addAttribute("data", user);
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             modelMap.addAttribute("success", false);
