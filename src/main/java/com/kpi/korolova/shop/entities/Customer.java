@@ -1,8 +1,10 @@
 package com.kpi.korolova.shop.entities;
 
+import com.kpi.korolova.shop.util.MapConverter;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,13 @@ public class Customer {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private User user;
+
+    @Column(name = "info")
+    @Convert(converter = MapConverter.class)
+    private Map<String, Object> attributes;
+
+    public Customer() {
+    }
 
     public Integer getId() {
         return id;
@@ -50,6 +59,14 @@ public class Customer {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
     @Override

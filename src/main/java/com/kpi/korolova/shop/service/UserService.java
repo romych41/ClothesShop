@@ -18,7 +18,7 @@ public class UserService {
         return null;
     }
 
-    public int addNewUser(User user) {
-        return userRepository.save(user).getId();
+    public void addNewUser(User user) {
+        userRepository.save(user);
     }
 }

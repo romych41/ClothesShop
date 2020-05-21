@@ -2,9 +2,11 @@ package com.kpi.korolova.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kpi.korolova.shop.model.Size;
+import com.kpi.korolova.shop.util.MapConverter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +28,10 @@ public class ProductModel {
     @JoinColumn(name = "product_name_id", referencedColumnName = "id")
     @JsonIgnore
     private ProductName productName;
+
+    @Column(name = "info")
+    @Convert(converter = MapConverter.class)
+    private Map<String, Object> attributes;
 
     public Integer getId() {
         return id;
@@ -57,6 +63,14 @@ public class ProductModel {
 
     public void setProductName(ProductName productName) {
         this.productName = productName;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
     @Override

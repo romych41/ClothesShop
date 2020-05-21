@@ -1,5 +1,6 @@
 package com.kpi.korolova.shop.service;
 
+import com.kpi.korolova.shop.exceptions.InvalidParamsException;
 import com.kpi.korolova.shop.model.Size;
 import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.model.CsvProduct;
@@ -8,7 +9,6 @@ import com.kpi.korolova.shop.entities.ProductName;
 import com.kpi.korolova.shop.repository.ProductNameRepository;
 import com.kpi.korolova.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +67,11 @@ public class ProductService {
         return productRepository.count();
     }
 
-    public List<ProductName> getFilteredProducts(int page, int size) {
-        return productNameRepository.findAll(PageRequest.of(page, size)).getContent();
+    public ProductName getProduct(int id) throws InvalidParamsException {
+        if(id < 1) {
+            throw new InvalidParamsException(String.format("id: %s", id));
+        }
+        return productNameRepository.findById(id).get();
     }
 
     public void editProductName(ProductName product) {
@@ -79,6 +82,7 @@ public class ProductService {
         ProductModel old = productRepository.findById(product.getId()).get();
         old.setSize(product.getSize());
         old.setPrice(product.getPrice());
+        old.setAttributes(product.getAttributes());
         productRepository.save(old);
     }
 }
