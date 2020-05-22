@@ -1,5 +1,8 @@
 package com.kpi.korolova.shop.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kpi.korolova.shop.model.Category;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,6 +21,21 @@ public class ProductName {
 
     @Column
     private String color;
+
+    @Column
+    private Boolean fitting = true;
+
+    @Column
+    @JsonIgnore
+    private String photo;
+
+    @Column(name = "ph_format")
+    @JsonIgnore
+    private String phFormat;
+
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private Category category;
 
     @OneToMany(mappedBy = "productName")
     private Set<ProductModel> productModels = new HashSet<>();
@@ -50,6 +68,38 @@ public class ProductName {
         return productModels;
     }
 
+    public boolean isFitting() {
+        return fitting;
+    }
+
+    public void setFitting(boolean fitting) {
+        this.fitting = fitting;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getPhFormat() {
+        return phFormat;
+    }
+
+    public void setPhFormat(String phFormat) {
+        this.phFormat = phFormat;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public void setProductModels(Set<ProductModel> productModels) {
         this.productModels = productModels;
     }
@@ -59,14 +109,18 @@ public class ProductName {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductName that = (ProductName) o;
-        return Objects.equals(id, that.id) &&
+        return fitting == that.fitting &&
+                Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(color, that.color);
+                Objects.equals(color, that.color) &&
+                Objects.equals(photo, that.photo) &&
+                Objects.equals(phFormat, that.phFormat) &&
+                category == that.category;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id, name, color, fitting, photo, phFormat, category);
     }
 
     @Override
@@ -75,6 +129,10 @@ public class ProductName {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", fitting=" + fitting +
+                ", photo='" + photo + '\'' +
+                ", phFormat='" + phFormat + '\'' +
+                ", category=" + category +
                 '}';
     }
 }
