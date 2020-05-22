@@ -23,7 +23,7 @@ public class ProductName {
     private String color;
 
     @Column
-    private Boolean fitting = true;
+    private Boolean fitting;
 
     @Column
     @JsonIgnore
