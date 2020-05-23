@@ -1,6 +1,7 @@
 package com.kpi.korolova.shop.service;
 
 import com.kpi.korolova.shop.exceptions.InvalidParamsException;
+import com.kpi.korolova.shop.model.Category;
 import com.kpi.korolova.shop.model.Size;
 import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.model.CsvProduct;
@@ -34,12 +35,14 @@ public class ProductService {
             String[] strings = csvProduct.getName().split(" ");
             for (int i = 0; i < strings.length - 1; i++) {
                 sb.append(strings[i]);
-                if (i < strings.length - 1) {
+                if (i < strings.length - 2) {
                     sb.append(" ");
                 }
             }
             productName.setName(sb.toString());
+            productName.setCategory(Category.fromContains(productName.getName()));
             productName.setColor(csvProduct.getColor());
+            //productName.setFitting(false);
             if (productNameRepository.existsByNameAndColor(productName.getName(), productName.getColor())) {
                 productName = productNameRepository.getByNameAndColor(productName.getName(), productName.getColor());
             } else {
@@ -109,5 +112,13 @@ public class ProductService {
         productName.setPhoto(imageEncoded);
         productName.setPhFormat(format);
         productNameRepository.save(productName);
+    }
+
+    public List<GenericPair<String, String>> getAllCategories() {
+        List<GenericPair<String, String>> result = new ArrayList<>();
+        for(Category category : Category.values()) {
+            result.add(new GenericPair<>(category.getDescription(), category.getParent()));
+        }
+        return result;
     }
 }
