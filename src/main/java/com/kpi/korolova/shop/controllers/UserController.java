@@ -3,6 +3,7 @@ package com.kpi.korolova.shop.controllers;
 import com.kpi.korolova.shop.entities.Customer;
 import com.kpi.korolova.shop.entities.User;
 import com.kpi.korolova.shop.service.CustomerService;
+import com.kpi.korolova.shop.service.OrderService;
 import com.kpi.korolova.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
@@ -15,6 +16,8 @@ public class UserController {
     private CustomerService customerService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/me")
     public ModelMap getCurrentUser() {
@@ -56,6 +59,21 @@ public class UserController {
         ModelMap modelMap = new ModelMap();
         try {
             customerService.editCustomer(customer);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @GetMapping("/orders")
+    public ModelMap getOrdersPerCustomer() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", orderService.getOrdersByCustomerId(
+                    customerService.getCurrentCustomer().getId()));
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             modelMap.addAttribute("success", false);

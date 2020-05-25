@@ -1,8 +1,11 @@
 package com.kpi.korolova.shop.controllers;
 
+import com.kpi.korolova.shop.entities.Order;
 import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.entities.ProductModel;
 import com.kpi.korolova.shop.entities.ProductName;
+import com.kpi.korolova.shop.model.OrderStatus;
+import com.kpi.korolova.shop.service.OrderService;
 import com.kpi.korolova.shop.service.ProductService;
 import com.kpi.korolova.shop.util.DbUtil;
 import com.kpi.korolova.shop.util.GenericPair;
@@ -15,14 +18,17 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
     private static final Logger logger = Logger.getLogger(ShopController.class);
+
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping("/importProducts")
     public ModelMap importProducts(@RequestBody CsvData csvData) {
@@ -89,6 +95,70 @@ public class AdminController {
             productService.setProductPhoto(productId, photo);
             modelMap.addAttribute("success", true);
         } catch (Exception e){
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @PutMapping("/order")
+    public ModelMap editOrder(@RequestBody Order order) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            orderService.editOrder(order);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @GetMapping("/order")
+    public ModelMap getOrders(@RequestParam OrderStatus status,
+                              @RequestParam String sort,
+                              @RequestParam boolean desc,
+                              @RequestParam int page,
+                              @RequestParam int size) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", orderService.getAllOrdersByStatus(status, sort, desc, page, size));
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @GetMapping("/order/statuses")
+    public ModelMap getOrders() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", OrderStatus.values());
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @GetMapping("/order/byNumber")
+    public ModelMap getOrders(@RequestParam Integer number) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", orderService.getOrderByOrderNumber(number));
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             modelMap.addAttribute("success", false);
             modelMap.addAttribute("error", e.getMessage());

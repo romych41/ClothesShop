@@ -1,7 +1,8 @@
 package com.kpi.korolova.shop.service;
 
-import com.kpi.korolova.shop.exceptions.CustomerNotFound;
+import com.kpi.korolova.shop.exceptions.CustomerNotFoundException;
 import com.kpi.korolova.shop.exceptions.InvalidParamsException;
+import com.kpi.korolova.shop.exceptions.NotAuthorizedException;
 import com.kpi.korolova.shop.exceptions.UserExistsException;
 import com.kpi.korolova.shop.entities.Customer;
 import com.kpi.korolova.shop.repository.CustomerRepository;
@@ -32,25 +33,28 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    public Customer getCustomer(Integer customerId) throws CustomerNotFound {
+    public Customer getCustomer(Integer customerId) throws CustomerNotFoundException {
         if(!customerRepository.existsById(customerId)) {
-            throw new CustomerNotFound("Customer is not found");
+            throw new CustomerNotFoundException("Customer is not found");
         }
-        return customerRepository.findById(customerId).get();
+        return customerRepository.getOne(customerId);
     }
 
-    public Customer getCurrentCustomer() throws CustomerNotFound {
+    public Customer getCurrentCustomer() throws CustomerNotFoundException, NotAuthorizedException {
+        if(userService.getCurrentUser() == null) {
+            throw new NotAuthorizedException("Nobody is logged in now");
+        }
         int userId = userService.getCurrentUser().getId();
         int customerId = customerRepository.findByUserId(userId).getId();
         if(!customerRepository.existsById(customerId)) {
-            throw new CustomerNotFound("Customer is not found");
+            throw new CustomerNotFoundException("Customer is not found");
         }
-        return customerRepository.findById(customerId).get();
+        return customerRepository.getOne(customerId);
     }
 
-    public void editCustomer(Customer customer) throws CustomerNotFound {
+    public void editCustomer(Customer customer) throws CustomerNotFoundException {
         if(!customerRepository.existsById(customer.getId())) {
-            throw new CustomerNotFound("Customer is not found");
+            throw new CustomerNotFoundException("Customer is not found");
         }
         if(customer.getUser().getPassword() == null && customer.getUser().getPassword().isEmpty()) {
             customer.getUser().setPassword(

@@ -4,6 +4,7 @@ import com.kpi.korolova.shop.util.MapConverter;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,10 +14,13 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
+
     @Column(name = "full_name")
     private String fullName;
+
     @Column
     private String phone;
+
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -25,6 +29,9 @@ public class Customer {
     @Column(name = "info")
     @Convert(converter = MapConverter.class)
     private Map<String, Object> attributes;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 
     public Customer() {
     }

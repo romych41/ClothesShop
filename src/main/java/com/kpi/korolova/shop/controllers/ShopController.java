@@ -1,9 +1,12 @@
 package com.kpi.korolova.shop.controllers;
 
+import com.kpi.korolova.shop.entities.Order;
 import com.kpi.korolova.shop.entities.ProductName;
 import com.kpi.korolova.shop.model.Category;
+import com.kpi.korolova.shop.model.OrderStatus;
 import com.kpi.korolova.shop.repository.ProductNameRepository;
 import com.kpi.korolova.shop.repository.specifications.ProductSpecification;
+import com.kpi.korolova.shop.service.OrderService;
 import com.kpi.korolova.shop.service.ProductService;
 import com.kpi.korolova.shop.util.DbUtil;
 import com.kpi.korolova.shop.util.GenericPair;
@@ -28,6 +31,9 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrderService orderService;
+
     @ResponseBody
     @GetMapping("/products")
     public ModelMap getProductsForShop(@RequestParam(required = false) String name,
@@ -39,7 +45,10 @@ public class ShopController {
                                        @RequestParam int size) {
         ModelMap modelMap = new ModelMap();
         try {
-            Category cat = Category.fromDescription(category);
+            Category cat = null;
+            if(category != null && !category.isEmpty()) {
+                cat = Category.fromDescription(category);
+            }
             Specification<ProductName> specification = new ProductSpecification(name, minPrice, maxPrice, color, cat);
             modelMap.addAttribute("data",
                     productNameRepository.findAll(specification, PageRequest.of(page - 1, size)).getContent());
@@ -79,5 +88,34 @@ public class ShopController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    @ResponseBody
+    @PostMapping("/order")
+    public ModelMap addOrder(@RequestBody Order order) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            orderService.addOrder(order, true);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @GetMapping("/order/delivery")
+    public ModelMap getDeliveryMethods() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
     }
 }
