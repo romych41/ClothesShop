@@ -29,6 +29,9 @@ public class ProductModel {
     @JsonIgnore
     private ProductName productName;
 
+    @Column
+    private boolean deleted;
+
     @Column(name = "info")
     @Convert(converter = MapConverter.class)
     private Map<String, Object> attributes;
@@ -63,6 +66,14 @@ public class ProductModel {
 
     public void setProductName(ProductName productName) {
         this.productName = productName;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Map<String, Object> getAttributes() {

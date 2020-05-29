@@ -1,6 +1,7 @@
 package com.kpi.korolova.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kpi.korolova.shop.model.Category;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product_names", schema = "public")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProductName {
     @Id
     @Column
@@ -36,6 +38,9 @@ public class ProductName {
     @Column
     @Enumerated(value = EnumType.STRING)
     private Category category;
+
+    @Column
+    private boolean deleted;
 
     @OneToMany(mappedBy = "productName")
     private Set<ProductModel> productModels = new HashSet<>();
@@ -98,6 +103,14 @@ public class ProductName {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setProductModels(Set<ProductModel> productModels) {

@@ -42,9 +42,9 @@ public class ProductService {
             productName.setName(sb.toString());
             productName.setCategory(Category.fromContains(productName.getName()));
             productName.setColor(csvProduct.getColor());
-            //productName.setFitting(false);
             if (productNameRepository.existsByNameAndColor(productName.getName(), productName.getColor())) {
                 productName = productNameRepository.getByNameAndColor(productName.getName(), productName.getColor());
+                productName.setDeleted(false);
             } else {
                 productName = productNameRepository.save(productName);
             }
@@ -58,6 +58,7 @@ public class ProductService {
                 product.setSize(Size.valueOf(csvProduct.getSize()));
             }
             product.setPrice(csvProduct.getPrice());
+            product.setDeleted(false);
             productModels.add(productName);
         }
         for (ProductName productModel : productModels) {
@@ -74,17 +75,22 @@ public class ProductService {
         return productRepository.count();
     }
 
+    public long getAllProductNamesCount() {
+        return productNameRepository.count();
+    }
+
     public ProductName getProduct(int id) throws InvalidParamsException {
         if (id < 1) {
             throw new InvalidParamsException(String.format("id: %s", id));
         }
-        return productNameRepository.findById(id).get();
+        return productNameRepository.getOne(id);
     }
 
     public void editProductName(ProductName product) {
         ProductName old = productNameRepository.getOne(product.getId());
         product.setPhFormat(old.getPhFormat());
         product.setPhoto(old.getPhoto());
+        product.setDeleted(old.isDeleted());
         productNameRepository.save(product);
     }
 
@@ -120,5 +126,23 @@ public class ProductService {
             result.add(new GenericPair<>(category.getDescription(), category.getParent()));
         }
         return result;
+    }
+
+    public void deleteProductName(int nameId, boolean deleted) throws InvalidParamsException {
+        if(nameId < 1) {
+            throw new InvalidParamsException(String.format("nameId: %s", nameId));
+        }
+        ProductName productName = productNameRepository.getOne(nameId);
+        productName.setDeleted(deleted);
+        productNameRepository.save(productName);
+    }
+
+    public void deleteProductModel(int modelId, boolean deleted) throws InvalidParamsException {
+        if(modelId < 1) {
+            throw new InvalidParamsException(String.format("modelId: %s", modelId));
+        }
+        ProductModel productModel = productRepository.getOne(modelId);
+        productModel.setDeleted(deleted);
+        productRepository.save(productModel);
     }
 }

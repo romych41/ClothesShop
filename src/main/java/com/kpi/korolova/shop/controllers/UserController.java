@@ -81,4 +81,60 @@ public class UserController {
         }
         return modelMap;
     }
+
+    @ResponseBody
+    @GetMapping("/admins")
+    public ModelMap getAdmins() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", userService.getAdmins());
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @PostMapping("/admin")
+    public ModelMap addAdmin(@RequestBody User user) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            userService.addNewAdmin(user);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @PutMapping("/admin")
+    public ModelMap editAdmin(@RequestBody User user) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            userService.editAdmin(user);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
+    @DeleteMapping("/admin/{id}")
+    public ModelMap getAdmins(@PathVariable int id) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            userService.removeAdmin(id);
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
 }

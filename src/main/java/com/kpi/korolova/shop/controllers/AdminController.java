@@ -5,16 +5,15 @@ import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.entities.ProductModel;
 import com.kpi.korolova.shop.entities.ProductName;
 import com.kpi.korolova.shop.model.OrderStatus;
+import com.kpi.korolova.shop.model.Size;
 import com.kpi.korolova.shop.service.OrderService;
 import com.kpi.korolova.shop.service.ProductService;
-import com.kpi.korolova.shop.util.DbUtil;
-import com.kpi.korolova.shop.util.GenericPair;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,12 +45,25 @@ public class AdminController {
     @GetMapping("/products")
     public ModelMap getAllProducts(@RequestParam int page,
                                    @RequestParam int size,
-                                   @RequestParam String sort) {
+                                   @RequestParam(required = false) String sort) {
         ModelMap modelMap = new ModelMap();
         try {
-            Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort));
+            Pageable pageable = PageRequest.of(page, size);
             modelMap.addAttribute("data", productService.getAllProducts(pageable));
-            modelMap.addAttribute("count", productService.getAllProductsCount());
+            modelMap.addAttribute("count", productService.getAllProductNamesCount());
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @GetMapping("/productName/{id}")
+    public ModelMap getProduct(@PathVariable int id) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", productService.getProduct(id));
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             modelMap.addAttribute("success", false);
@@ -86,7 +98,6 @@ public class AdminController {
         return modelMap;
     }
 
-    @ResponseBody
     @PostMapping("/products/image")
     public ModelMap setImageForProduct(@RequestParam("product_id") int productId,
                                        @RequestParam MultipartFile photo) {
@@ -102,7 +113,6 @@ public class AdminController {
         return modelMap;
     }
 
-    @ResponseBody
     @PutMapping("/order")
     public ModelMap editOrder(@RequestBody Order order) {
         ModelMap modelMap = new ModelMap();
@@ -117,7 +127,6 @@ public class AdminController {
         return modelMap;
     }
 
-    @ResponseBody
     @GetMapping("/order")
     public ModelMap getOrders(@RequestParam OrderStatus status,
                               @RequestParam String sort,
@@ -136,7 +145,6 @@ public class AdminController {
         return modelMap;
     }
 
-    @ResponseBody
     @GetMapping("/order/statuses")
     public ModelMap getOrders() {
         ModelMap modelMap = new ModelMap();
@@ -151,12 +159,53 @@ public class AdminController {
         return modelMap;
     }
 
-    @ResponseBody
     @GetMapping("/order/byNumber")
     public ModelMap getOrders(@RequestParam Integer number) {
         ModelMap modelMap = new ModelMap();
         try {
             modelMap.addAttribute("data", orderService.getOrderByOrderNumber(number));
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @GetMapping("/product/sizes")
+    public ModelMap getSizes() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", Size.values());
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @PutMapping("/product/deleteName")
+    public ModelMap deleteProductName(@RequestBody ProductName productName) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            productService.deleteProductName(productName.getId(), productName.isDeleted());
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @PutMapping("/product/deleteModel")
+    public ModelMap deleteProductModel(@RequestBody ProductModel productModel) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            productService.deleteProductModel(productModel.getId(), productModel.isDeleted());
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
