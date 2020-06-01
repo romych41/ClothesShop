@@ -12,8 +12,8 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,7 +48,7 @@ public class AdminController {
                                    @RequestParam(required = false) String sort) {
         ModelMap modelMap = new ModelMap();
         try {
-            Pageable pageable = PageRequest.of(page, size);
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
             modelMap.addAttribute("data", productService.getAllProducts(pageable));
             modelMap.addAttribute("count", productService.getAllProductNamesCount());
             modelMap.addAttribute("success", true);
