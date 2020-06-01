@@ -21,6 +21,7 @@ public class UserService {
     }
 
     public void addNewAdmin(User user) {
+        user.setRole("ROLE_ADMIN");
         userRepository.save(user);
     }
 
@@ -28,6 +29,9 @@ public class UserService {
         if(user.getPassword() == null || user.getPassword().isEmpty()) {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
+        User old = userRepository.getOne(user.getId());
+        old.setEmail(user.getEmail());
+        old.setPassword(user.getPassword());
         userRepository.save(user);
     }
 
