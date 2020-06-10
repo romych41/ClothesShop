@@ -3,7 +3,6 @@ package com.kpi.korolova.shop.controllers;
 import com.kpi.korolova.shop.entities.Order;
 import com.kpi.korolova.shop.entities.ProductName;
 import com.kpi.korolova.shop.model.Category;
-import com.kpi.korolova.shop.model.OrderStatus;
 import com.kpi.korolova.shop.repository.ProductNameRepository;
 import com.kpi.korolova.shop.repository.specifications.ProductSpecification;
 import com.kpi.korolova.shop.service.OrderService;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/shop")
@@ -40,18 +41,20 @@ public class ShopController {
                                        @RequestParam(value = "min_price", required = false) BigDecimal minPrice,
                                        @RequestParam(value = "max_price", required = false) BigDecimal maxPrice,
                                        @RequestParam(required = false) String color,
-                                       @RequestParam(required = false) String category,
+                                       @RequestParam(required = false) List<String> category,
                                        @RequestParam int page,
                                        @RequestParam int size) {
         ModelMap modelMap = new ModelMap();
         try {
-            Category cat = null;
+            List<Category> categories = new ArrayList<>();
             if(category != null && !category.isEmpty()) {
-                cat = Category.fromDescription(category);
+                for (String c : category) {
+                    categories.add(Category.fromDescription(c));
+                }
             }
-            Specification<ProductName> specification = new ProductSpecification(name, minPrice, maxPrice, color, cat);
+            Specification<ProductName> specification = new ProductSpecification(name, minPrice, maxPrice, color, categories);
             modelMap.addAttribute("data",
-                    productNameRepository.findAll(specification, PageRequest.of(page - 1, size)).getContent());
+                    productNameRepository.findAll(specification, PageRequest.of(page, size)).getContent());
             modelMap.addAttribute("count", productNameRepository.count(Specification.where(specification)));
             modelMap.addAttribute("success", true);
         } catch (Exception e) {

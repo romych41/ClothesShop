@@ -14,9 +14,9 @@ public class ProductSpecification implements Specification<ProductName> {
     private final BigDecimal minPrice;
     private final BigDecimal maxPrice;
     private final String color;
-    private final Category category;
+    private final List<Category> category;
 
-    public ProductSpecification(String name, BigDecimal minPrice, BigDecimal maxPrice, String color, Category category) {
+    public ProductSpecification(String name, BigDecimal minPrice, BigDecimal maxPrice, String color, List<Category> category) {
         this.name = name;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
@@ -39,8 +39,12 @@ public class ProductSpecification implements Specification<ProductName> {
         if(color != null) {
             predicates.add(criteriaBuilder.equal(root.get("color"), color));
         }
-        if(category != null) {
-            predicates.add(criteriaBuilder.equal(root.get("category"), category));
+        if(category != null && !category.isEmpty()) {
+            CriteriaBuilder.In<Category> in = criteriaBuilder.in(root.get("category"));
+            for(Category c : category) {
+                in.value(c);
+            }
+            predicates.add(in);
         }
         Predicate[] predicates1 = new Predicate[predicates.size()];
         predicates.toArray(predicates1);
