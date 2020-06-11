@@ -113,6 +113,7 @@ public class ShopController {
     public ModelMap getDeliveryMethods() {
         ModelMap modelMap = new ModelMap();
         try {
+            modelMap.addAttribute("data", orderService.getDeliveries(true));
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

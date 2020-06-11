@@ -1,6 +1,7 @@
 package com.kpi.korolova.shop.entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -9,8 +10,15 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     @Column
     private String description;
+
+    @Column
+    private BigDecimal cost;
+
+    @Column
+    private boolean deleted;
 
     public int getId() {
         return id;

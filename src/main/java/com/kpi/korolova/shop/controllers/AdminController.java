@@ -214,4 +214,18 @@ public class AdminController {
         }
         return modelMap;
     }
+
+    @GetMapping("/order/delivery")
+    public ModelMap getDeliveryMethods() {
+        ModelMap modelMap = new ModelMap();
+        try {
+            modelMap.addAttribute("data", orderService.getDeliveries(false));
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
 }

@@ -13,7 +13,7 @@ public class OrderedProduct {
     @Column(name = "product_id")
     private int productId;
 
-    @Column(name = "order_id")
+    @Column(name = "order_id", insertable = false, updatable = false)
     private int orderId;
 
     @ManyToOne

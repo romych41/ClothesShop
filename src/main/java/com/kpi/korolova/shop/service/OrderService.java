@@ -1,9 +1,11 @@
 package com.kpi.korolova.shop.service;
 
+import com.kpi.korolova.shop.entities.Delivery;
 import com.kpi.korolova.shop.entities.Order;
 import com.kpi.korolova.shop.entities.OrderedProduct;
 import com.kpi.korolova.shop.exceptions.*;
 import com.kpi.korolova.shop.model.OrderStatus;
+import com.kpi.korolova.shop.repository.DeliveryRepository;
 import com.kpi.korolova.shop.repository.OrderRepository;
 import com.kpi.korolova.shop.repository.OrderedProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,11 @@ public class OrderService {
     @Autowired
     private OrderedProductRepository orderedProductRepository;
 
+    @Autowired
+    private DeliveryRepository deliveryRepository;
+
     public void addOrder(Order order, boolean currCustomer) throws InvalidParamsException, CustomerNotFoundException, NotAuthorizedException, GenerateOrderNumberException {
-        if(order == null || (currCustomer && order.getCustomerId() < 0) ||
+        if(order == null || (!currCustomer && order.getCustomerId() < 0) ||
                 order.getDeliveryId() < 0 || order.getProducts() == null || order.getProducts().isEmpty()) {
             throw new InvalidParamsException(order == null
                     ? "Заказ не определён"
@@ -98,5 +103,19 @@ public class OrderService {
             throw new OrderNotFoundException("Order was not found");
         }
         return orderRepository.getOrderByNumber(number);
+    }
+
+    public List<Delivery> getDeliveries(boolean onlyActive) {
+        List<Delivery> deliveries = null;
+        if(onlyActive) {
+            deliveries = deliveryRepository.findAllByDeleted(false);
+        } else {
+            deliveries = deliveryRepository.findAll();
+        }
+        return deliveries;
+    }
+
+    public void saveDelivery(Delivery delivery) {
+        deliveryRepository.save(delivery);
     }
 }
