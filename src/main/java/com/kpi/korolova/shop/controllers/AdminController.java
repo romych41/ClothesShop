@@ -1,5 +1,6 @@
 package com.kpi.korolova.shop.controllers;
 
+import com.kpi.korolova.shop.entities.Delivery;
 import com.kpi.korolova.shop.entities.Order;
 import com.kpi.korolova.shop.model.CsvData;
 import com.kpi.korolova.shop.entities.ProductModel;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -135,7 +138,9 @@ public class AdminController {
                               @RequestParam int size) {
         ModelMap modelMap = new ModelMap();
         try {
-            modelMap.addAttribute("data", orderService.getAllOrdersByStatus(status, sort, desc, page, size));
+            List<Order> result = orderService.getAllOrdersByStatus(status, sort, desc, page, size);
+            modelMap.addAttribute("data", result);
+            modelMap.addAttribute("count", result.size());
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -220,6 +225,20 @@ public class AdminController {
         ModelMap modelMap = new ModelMap();
         try {
             modelMap.addAttribute("data", orderService.getDeliveries(false));
+            modelMap.addAttribute("success", true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            modelMap.addAttribute("success", false);
+            modelMap.addAttribute("error", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @PostMapping("/order/delivery")
+    public ModelMap addDeliveryMethod(@RequestBody Delivery delivery) {
+        ModelMap modelMap = new ModelMap();
+        try {
+            orderService.saveDelivery(delivery);
             modelMap.addAttribute("success", true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

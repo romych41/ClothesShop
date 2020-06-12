@@ -14,6 +14,8 @@ import com.kpi.korolova.shop.util.GenericPair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -55,6 +57,7 @@ public class ProductService {
                 product = new ProductModel();
                 productName.getProductModels().add(product);
                 product.setProductName(productName);
+                product.setsProductName(productName.getName());
                 product.setSize(Size.valueOf(csvProduct.getSize()));
             }
             product.setPrice(csvProduct.getPrice());
@@ -86,12 +89,20 @@ public class ProductService {
         return productNameRepository.getOne(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void editProductName(ProductName product) {
         ProductName old = productNameRepository.getOne(product.getId());
         product.setPhFormat(old.getPhFormat());
         product.setPhoto(old.getPhoto());
         product.setDeleted(old.isDeleted());
         productNameRepository.save(product);
+        if(!old.getName().equals(product.getName())) {
+            List<ProductModel> productModels = productRepository.findAllBysProductName(product.getName());
+            for (ProductModel p : productModels) {
+                p.setsProductName(product.getName());
+            }
+            productRepository.saveAll(productModels);
+        }
     }
 
     public void editProductModel(ProductModel product) {
@@ -99,6 +110,7 @@ public class ProductService {
         old.setSize(product.getSize());
         old.setPrice(product.getPrice());
         old.setAttributes(product.getAttributes());
+        old.setsProductName(old.getsProductName());
         productRepository.save(old);
     }
 

@@ -36,18 +36,36 @@ public class Delivery {
         this.description = description;
     }
 
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Delivery delivery = (Delivery) o;
         return id == delivery.id &&
-                Objects.equals(description, delivery.description);
+                deleted == delivery.deleted &&
+                Objects.equals(description, delivery.description) &&
+                Objects.equals(cost, delivery.cost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description);
+        return Objects.hash(id, description, cost, deleted);
     }
 
     @Override
@@ -55,6 +73,8 @@ public class Delivery {
         return "Delivery{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
+                ", cost=" + cost +
+                ", deleted=" + deleted +
                 '}';
     }
 }

@@ -13,6 +13,9 @@ public class OrderedProduct {
     @Column(name = "product_id")
     private int productId;
 
+    @Column(name = "product_name_id")
+    private int productNameId;
+
     @Column(name = "order_id", insertable = false, updatable = false)
     private int orderId;
 
@@ -63,6 +66,14 @@ public class OrderedProduct {
         this.orderId = orderId;
     }
 
+    public int getProductNameId() {
+        return productNameId;
+    }
+
+    public void setProductNameId(int productNameId) {
+        this.productNameId = productNameId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,13 +81,15 @@ public class OrderedProduct {
         OrderedProduct that = (OrderedProduct) o;
         return id == that.id &&
                 productId == that.productId &&
+                productNameId == that.productNameId &&
+                orderId == that.orderId &&
                 amount == that.amount &&
                 Objects.equals(product, that.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId, product, amount);
+        return Objects.hash(id, productId, productNameId, orderId, product, amount);
     }
 
     @Override
@@ -84,6 +97,8 @@ public class OrderedProduct {
         return "OrderedProduct{" +
                 "id=" + id +
                 ", productId=" + productId +
+                ", productNameId=" + productNameId +
+                ", orderId=" + orderId +
                 ", product=" + product +
                 ", amount=" + amount +
                 '}';

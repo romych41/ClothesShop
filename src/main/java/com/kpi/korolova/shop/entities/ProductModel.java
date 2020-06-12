@@ -17,6 +17,9 @@ public class ProductModel {
     @Column
     private Integer id;
 
+    @Column(name = "s_product_name")
+    private String sProductName;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Size size;
@@ -84,29 +87,43 @@ public class ProductModel {
         this.attributes = attributes;
     }
 
+    public String getsProductName() {
+        return sProductName;
+    }
+
+    public void setsProductName(String sProductName) {
+        this.sProductName = sProductName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductModel that = (ProductModel) o;
-        return Objects.equals(id, that.id) &&
+        return deleted == that.deleted &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(sProductName, that.sProductName) &&
                 size == that.size &&
                 Objects.equals(price, that.price) &&
-                Objects.equals(productName, that.productName);
+                Objects.equals(productName, that.productName) &&
+                Objects.equals(attributes, that.attributes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, size, price, productName);
+        return Objects.hash(id, sProductName, size, price, productName, deleted, attributes);
     }
 
     @Override
     public String toString() {
         return "ProductModel{" +
                 "id=" + id +
+                ", sProductName='" + sProductName + '\'' +
                 ", size=" + size +
                 ", price=" + price +
                 ", productName=" + productName +
+                ", deleted=" + deleted +
+                ", attributes=" + attributes +
                 '}';
     }
 }

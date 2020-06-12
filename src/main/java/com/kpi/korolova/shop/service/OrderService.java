@@ -115,7 +115,11 @@ public class OrderService {
         return deliveries;
     }
 
-    public void saveDelivery(Delivery delivery) {
+    public void saveDelivery(Delivery delivery) throws InvalidParamsException {
+        if(delivery.getDescription() == null || delivery.getDescription().isEmpty() ||
+                delivery.getCost() == null || delivery.getCost().intValue() < 0) {
+            throw new InvalidParamsException(String.format("description: %s, cost: %s", delivery.getDescription(), delivery.getCost()));
+        }
         deliveryRepository.save(delivery);
     }
 }
