@@ -56,9 +56,12 @@ public class CustomerService {
         if(!customerRepository.existsById(customer.getId())) {
             throw new CustomerNotFoundException("Customer is not found");
         }
-        if(customer.getUser().getPassword() == null && customer.getUser().getPassword().isEmpty()) {
+        if(customer.getUser().getPassword() == null || customer.getUser().getPassword().isEmpty()) {
             customer.getUser().setPassword(
                     customerRepository.getOne(customer.getId()).getUser().getPassword());
+        }
+        if(customer.getAttributes() != null && customer.getAttributes().isEmpty()) {
+            customer.setAttributes(null);
         }
         customerRepository.save(customer);
     }

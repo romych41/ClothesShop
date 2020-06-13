@@ -111,6 +111,9 @@ public class ProductService {
         old.setPrice(product.getPrice());
         old.setAttributes(product.getAttributes());
         old.setsProductName(old.getsProductName());
+        if(product.getAttributes() != null && product.getAttributes().isEmpty()) {
+            product.setAttributes(null);
+        }
         productRepository.save(old);
     }
 
